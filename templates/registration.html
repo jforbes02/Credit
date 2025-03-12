@@ -1,10 +1,43 @@
 <!DOCTYPE html>
+
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Register Here!</title>
 </head>
 <body>
+    <form action="#" method="POST">
+        <div class = "input-box">
+            <input type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class = "input-box">
+            <input type="text" name="password" placeholder="Password" required>
+        </div>
+        <div class = "input-box">
+            <input type="text" name="age" placeholder="Age" required>
+        </div>
+        <div class = "input-box">
+            <input type="text" name="email" placeholder="email" required>
+        </div>
 
+        <button type="submit" class="btn">Register</button>
+    </form>
 </body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: black;
+    }
+    form {
+        width: 200px;
+        border: 10px green solid;
+        color: black;
+    }
+</style>
 </html>
+

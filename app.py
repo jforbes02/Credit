@@ -1,5 +1,7 @@
-from flask import Flask
-from database import db
+from flask import Flask, render_template
+from flask_login import LoginManager
+from livereload import Server
+from database import db, User, Config, Transaction
 
 """
 App that
@@ -11,15 +13,17 @@ App that
 
 """
 app = Flask(__name__)
-
+app.config.from_object(Config)
+db.init_app(app)
 with app.app_context():
     db.create_all()
+#class UserForm(Form):
 @app.route('/') #when they go to root of website
 def index():
     return "drink"
 
-@app.route('register')
+@app.route('/registration')
 def register():
-
+    return render_template("registration.html")
 if __name__ == '__main__':
     app.run(debug=True)
