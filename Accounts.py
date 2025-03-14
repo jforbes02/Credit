@@ -11,6 +11,7 @@ class Account:
         :return: returns initial credit amount given to user based on age, or 500 so it's never too low
         """
         return max(age * 125.00, 500.00)
+
     @staticmethod
     def transaction(user, type, amount, description):
         """
@@ -21,7 +22,7 @@ class Account:
         :param description: each transaction has a description
         :return: Transaction object
         """
-        if type == "purchase":
+        if type == "purchase" or "loss":
             if user.current_balance + amount > user.credit_limit:
                 return "You dont have enough credit"
 
@@ -38,7 +39,7 @@ class Account:
             db.session.commit()
             return transaction
         elif type == "payment":
-            user.current_balance -= amount
+            user.current_balance += amount
             transaction = Transaction(
                 amount = amount,
                 type = type,
@@ -75,4 +76,4 @@ class Account:
 
     @staticmethod
     def weekly_debt():
-        return (User.current_balance / User.credit_limit) * random.random(1, 10)
+        return User.current_balance / User.credit_limit * random.random(1, 10)
