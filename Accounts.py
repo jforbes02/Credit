@@ -1,7 +1,6 @@
 import random
 from database import User, Transaction, db
 
-
 class Account:
     """ Handles credit limits and transactions """
     @staticmethod
@@ -76,4 +75,4 @@ class Account:
 
     @staticmethod
     def weekly_debt():
-        return User.current_balance / User.credit_limit * random.random(1, 10)
+        return User.current_balance / User.credit_limit * random.randint(1, 10)

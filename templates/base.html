@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-<!-- Header -->
+<div class="wrapper"></div>
 <nav class="navbar">
+
     <ul class="nav-list">
         {% if not current_user.is_authenticated %}
         <li class="nav-item"><a href="/">Home</a></li>
