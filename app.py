@@ -173,6 +173,10 @@ def make_purchase():
 
     return redirect(url_for('dashboard'))
 
+@app.route("/store")
+@login_required
+def store():
+    return render_template('store.html')
 with app.app_context():
     #db.drop_all()
     db.create_all()

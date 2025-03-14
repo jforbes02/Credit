@@ -3,35 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layout</title>
+
+    <title>{% block title %} Credit Management {% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-<div class="wrapper"></div>
-<nav class="navbar">
+<header class="header">
+    <nav class="header">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="fas fa-credit-card me-2">CreditGame</i>
+            </a>
 
-    <ul class="nav-list">
-        {% if not current_user.is_authenticated %}
-        <li class="nav-item"><a href="/">Home</a></li>
-        <li class="nav-item"><a href="/login">Login</a></li>
-        <li class="nav-item"><a href="/registration">Register</a></li>
-        {% else %}
-        <li class="nav-item"><a href="/">Home</a></li>
-        {% endif %}
-    </ul>
-</nav>
-<main>{% block content %}{% endblock %}</main>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('play_rps') }}">Play Games</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('store') }}">Store</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>{{ current_user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="/dashboard">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Main Content Container -->
+<main class="main container">{% block content %}{% endblock %}</main>
 <footer>
-    {% if current_user.is_authenticated %}
-    <a href="/logout" class="logout">Logout</a>
-    {%  endif %}
-    <p>&copy; 2025 Job Tracker. All rights reserved.</p>
+    <p>&copy; 2025 Credit Game All rights reserved.</p>
 </footer>
 </body>
 <style>
     nav {
-        background-color: greenyellow;
-        color: white;
+        background-color: white;
+        color: black;
         justify-content: right;
         align-items: flex-start;
     }
