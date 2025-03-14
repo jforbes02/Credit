@@ -35,5 +35,3 @@ class Transaction(db.Model):
     user = db.relationship('User', backref='transaction', lazy='select')
     def __repr__(self):
         return f'<Transaction {self.id}: {self.transaction_type} ${self.amount}>'
-
-

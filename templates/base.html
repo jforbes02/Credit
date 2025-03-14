@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<!-- Header -->
+<nav class="navbar">
+    <ul class="nav-list">
+        {% if not current_user.is_authenticated %}
+        <li class="nav-item"><a href="/">Home</a></li>
+        <li class="nav-item"><a href="/login">Login</a></li>
+        <li class="nav-item"><a href="/registration">Register</a></li>
+        {% else %}
+        <li class="nav-item"><a href="/">Home</a></li>
+        {% endif %}
+    </ul>
+</nav>
+<main>{% block content %}{% endblock %}</main>
+<footer>
+    {% if current_user.is_authenticated %}
+    <a href="/logout" class="logout">Logout</a>
+    {%  endif %}
+    <p>&copy; 2025 Job Tracker. All rights reserved.</p>
+</footer>
+</body>
+<style>
+    nav {
+        background-color: greenyellow;
+        color: white;
+        justify-content: right;
+        align-items: flex-start;
+    }
+</style>
+</html>

@@ -1,0 +1,16 @@
+body {
+    font-family: "Times New Roman", Georgiea, Serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Playfair Display";
+    letter-spacing:5px;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+footer {
+    text-align: center;
+    margin-top: 20px;
+}
