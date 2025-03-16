@@ -111,7 +111,7 @@ def delete_account():
     flash('Account deleted')
     return render_template('home.html')
 
-@app.route('/play_rps', methods=['GET', 'POST'])
+@app.route('/RockPaperScissors', methods=['GET', 'POST'])
 @login_required
 def play_rps():
     """  Connecting the game to this  """
@@ -122,15 +122,16 @@ def play_rps():
             flash('Please enter an amount greater than 0')
             return redirect(url_for('play_rps'))
 
-        g_result = RPS(amount) #game function starts
-        if g_result < 0:
-            transaction_type = "payment" #transaction type for win
-            transaction_amount = abs(g_result)
-            description = "Won RPS"
-        else: #user lost
-            transaction_type = "loss" #transaction type for  a loss
-            transaction_amount = abs(g_result)
-            description = "Loss RPS"
+        player_choice = request.form.get('choice')
+        g_result = RPS(player_choice, amount) #game function starts
+        if g_result["status"] == "tie":
+            session['wager'] = g_result["wager"] #wager for next round
+            flash(f"Tie Double Or Nothing: ${g_result['amount']}")
+            return render_template('RockPaperScissors.html', user=current_user,wager=g_result["amount"], game_result=g_result)
+
+        transaction_type = "payment" if g_result["status"] == "win" else "loss"
+        transaction_amount = abs(g_result["amount"])
+        description = f"{'Won Game' if g_result["status"] == "win" else 'Lost Game'}: RPS"
 
         rps_transresult = Account.transaction( #creates record of transaction
             current_user, #current logged in user
@@ -145,8 +146,9 @@ def play_rps():
         else:
             flash(f'Game completed! {description}')
 
-        return redirect(url_for('dashboard'))
+        return render_template('RockPaperScissors.html', user=current_user, game_result=g_result)
     return render_template('RockPaperScissors.html', user=current_user)
+
 
 @app.route('/purchase', methods=['POST'])
 @login_required
