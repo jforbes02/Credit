@@ -1,10 +1,69 @@
 {% extends "base.html" %}
+{%  block title %}
+{current_user.username} Dashboard
+{%  endblock %}
 {% block content %}
-    <div class="dashboard">
-        <nav>
-            <ui>
-
-            </ui>
-        </nav>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ current_user.username }}</h1>
+        <div class="credit-summary">
+            <div class="credit-item">
+                <h3>Credit Limit</h3>
+                <p class="credit-value">{{ current_user.credit_limit }}</p>
+            </div>
+            <div class="credit-item">
+                <h3>Current Balance</h3>
+                <p class="credit-value">${{ current_user.current_balance }}</p>
+                <p class="credit-status {% if current_user.current_balance > current_user.credit_limit %}text-danger{% endif %}">
+                    {% if current_user.current_balance > current_user.credit_limit %}
+                    Over Limit!
+                    {% else %}
+                    Availible Credit: ${{ current_user.credit_limit - current_user.current_balance }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
     </div>
+
+    <div class="dashboard-actions">
+        <div class="action-card">
+            <h3>Make A Payment!</h3>
+            <form action="{{ url_for('play_rps') }}" method="POST"></form>
+        </div>
+    </div>
+    <div class="action-card">
+        <h3>Quick Links</h3>
+        <div class="quick-links">
+            <a href="{{ url_for('play_rps') }}" class="btn btn-primary">Play Games</a>
+            <a href="{{ url_for('store') }}" class="btn btn-primary">Visit Store</a>
+        </div>
+    </div>
+
+    <div class="transaction-history">
+        <h3>Transaction History</h3>
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.type }}</td>
+                <td>{{ transaction.description }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No Transactions Available</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 {% endblock %}

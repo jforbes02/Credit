@@ -21,7 +21,7 @@ class Account:
         :param description: each transaction has a description
         :return: Transaction object
         """
-        if type == "purchase" or "loss":
+        if type == "purchase" or type == "loss":
             if user.current_balance + amount > user.credit_limit:
                 return "You dont have enough credit"
 
@@ -38,7 +38,7 @@ class Account:
             db.session.commit()
             return transaction
         elif type == "payment":
-            user.current_balance += amount
+            user.current_balance -= amount
             transaction = Transaction(
                 amount = amount,
                 type = type,
