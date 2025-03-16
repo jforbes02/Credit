@@ -1,10 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %}
+Rock Paper Scissors <!-- Page Title -->
+{% endblock %}
+
+{% block content %}
+<div class="rps-container">
+    <h1>Rock Paper Scissors</h1>
+    <div class="credits">
+        <h3>Current Balance: ${{ user.current_balance }}</h3>
+        <h3>Credit Limit: ${{ user.credit_limit }}</h3>
+    </div>
+
+    <div class="game=form">
+        <form id="wager-form" action = "{{ url_for('wager_form') }}" method = "POST">
+            <div class="form-group">
+                <label for="amount">Wager Amount $$$:</label>
+                <input type="number" id="amount" name="amount" min="1" value="5" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form><!-- wager-form -->
+    </div>
+
+    <div id="game-section" class="game-section" style="display: none;">
+        <div class="choices">
+            <button id="rock" class="choice-btn">
+                <img src="{{ url_for('static', filename='rock.png') }}" alt="rock">
+                <span>Rock</span>
+            </button>
+            <button id="paper" class="choice-btn">
+                <img src="{{ url_for('static', filename='paper.png') }}" alt="paper">
+                <span>Paper</span>
+            </button>
+            <button id="scissors" class="choice-btn">
+                <img src="{{ url_for('static', filename='scissors.png') }}" alt="scissors">
+                <span>Scissors</span>
+            </button>
+        </div> <!-- options for rock paper scissors -->
+
+        <div class="results" style="display: none;">
+            <div class="result-display">
+                <div class="player-choice">
+                    <h3>Your Choice</h3>
+                    <div id="player-choice-display" class="choice-display"></div>
+                </div>
+                <div class="v5">V5</div>
+                <div class="computer-choice">
+                    <h3>Computer Choice</h3>
+                    <div id="computer-choice-display" class="choice-display"></div>
+                </div>
+            </div>
+            <div id="result-message" class="result-message"></div>
+            <button id="play-again" class="btn btn-primary">Play Again?</button>
+        </div> <!-- Results -->
+
+
+    </div>
+</div>
+
+
+{% endblock %}
