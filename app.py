@@ -57,7 +57,6 @@ def register():
         return redirect(url_for('login'))
     return render_template("registration.html")
 
-
 @login_manager.user_loader
 def load_user(user_id):
     """
@@ -66,7 +65,6 @@ def load_user(user_id):
     :return: User object
     """
     return User.query.get(int(user_id))
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -180,6 +178,9 @@ def make_purchase():
 @login_required
 def store():
     return render_template('store.html')
+
+
+
 with app.app_context():
     #db.drop_all()
     db.create_all()
