@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, flash, url_for, request, session
+from flask import Flask, render_template, redirect, flash, url_for, request, session, jsonify
 from flask_login import logout_user, login_required, current_user, LoginManager, login_user
 from werkzeug.security import generate_password_hash
 from Accounts import Account
@@ -115,18 +115,40 @@ def delete_account():
 def play_rps():
     """  Connecting the game to this  """
     if request.method == 'POST':
-        amount = int(request.form.get('amount', 5)) #Amount user wagered, 5 if no input
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
-        if amount <=0: #makes sure it is positive
-            flash('Please enter an amount greater than 0')
-            return redirect(url_for('play_rps'))
+        if is_ajax:
+            data = request.get_json()
+            amount = int(data.get('amount', 5))
+            player_choice = data.get('player_choice')
+        else:
+            amount = int(request.form['amount'], 5)
+            player_choice = request.form['choice']
 
-        player_choice = request.form.get('choice')
+        if amount <=0:
+            if is_ajax: #makes sure it is positive
+                return jsonify({'error': 'Enter number > 0'}), 400
+            else:
+                flash('Please enter an amount greater than 0')
+                return redirect(url_for('play_rps'))
+        #player_choice = request.form.get('choice')
         g_result = RPS(player_choice, amount) #game function starts
+        g_result['player_choice'] = player_choice
+
         if g_result["status"] == "tie":
-            session['wager'] = g_result["wager"] #wager for next round
-            flash(f"Tie Double Or Nothing: ${g_result['amount']}")
-            return render_template('RockPaperScissors.html', user=current_user,wager=g_result["amount"], game_result=g_result)
+            session['wager'] = g_result["wager"]
+
+            if is_ajax:
+                return jsonify({
+                    'status': 'tie',
+                    'message': 'TIE',
+                    'amount': g_result["amount"],
+                    'cpu_choice': g_result[g_result['cpu_choice']],
+                    'current_balance': current_user.current_balance
+                })#wager for next round
+            else:
+                flash(f"Tie Double Or Nothing: ${g_result['amount']}")
+                return render_template('RockPaperScissors.html', user=current_user,wager=g_result["amount"], game_result=g_result)
 
         transaction_type = "payment" if g_result["status"] == "win" else "loss"
         transaction_amount = abs(g_result["amount"])
@@ -145,7 +167,16 @@ def play_rps():
         else:
             flash(f'Game completed! {description}')
 
-        return render_template('RockPaperScissors.html', user=current_user, game_result=g_result)
+        if is_ajax:
+            return jsonify({
+                'status': g_result['status'],
+                'message': g_result['message'],
+                'amount': g_result['amount'],
+                'cpu_choice': g_result[g_result['cpu_choice']],
+                'current_balance': current_user.current_balance,
+            })
+        else:
+            return render_template('RockPaperScissors.html', user=current_user, game_result=g_result)
     return render_template('RockPaperScissors.html', user=current_user)
 
 

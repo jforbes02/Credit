@@ -26,15 +26,15 @@ Rock Paper Scissors <!-- Page Title -->
     <div id="game-section" class="game-section" style="display: none;">
         <div class="choices">
             <button type="submit" name="choice" value="rock" id="rock" class="choice-btn">
-                <img src="/static/rock.png" alt="rock">
+                <img src="/static/rock.png" alt="rock" width="50" height="50">
                 <span>Rock</span>
             </button>
             <button type="submit" name="choice" value="paper" id="paper" class="choice-btn">
-                <img src="/static/paper.png" alt="paper">
+                <img src="/static/paper.png" alt="paper" width="50" height="50">
                 <span>Paper</span>
             </button>
             <button type="submit" name="choice" value="scissors" id="scissors" class="choice-btn">
-                <img src="/static/scissors.png" alt="scissors">
+                <img src="/static/scissors.png" alt="scissors" width="50" height="50">
                 <span>Scissors</span>
             </button>
         </div> <!-- options for rock paper scissors -->
@@ -48,7 +48,7 @@ Rock Paper Scissors <!-- Page Title -->
                 <div class="v5">V5</div>
                 <div class="computer-choice">
                     <h3>Computer Choice</h3>
-                    <div id="computer-choice-display" class="choice-display"></div>
+                    <div id="computer-choice-display" class="CPU-display"></div>
                 </div>
             </div>
             <div id="result-message" class="result-message"></div>
@@ -58,6 +58,69 @@ Rock Paper Scissors <!-- Page Title -->
 
     </div>
 </div>
+
+<!-- First Attempt at JavaScript -->
+<script>
+//wait for doc to fully load
+document.addEventListener("DOMContentLoaded", function() {
+    //Understands each key elements in the HTML Doc
+    const wagerForm = document.getElementById('wager-form'); //where players enter wager amount
+    const gameSection = document.getElementById('game-section'); //where rps buttons are
+    const resultsSection = document.querySelector('.results'); //first element of class "results"
+
+    //Listens for wager form to be submitted but doesn't reload the page when submit is pressed
+    wagerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        gameSection.style.display = 'block';
+    }); //when submit is pressed the Game is Displayed
+
+    //Instructions for the choice buttons
+    const choiceButtons = document.querySelectorAll('.choice-btn');
+    choiceButtons.forEach(button => {
+        button.addEventListener('click', function() { //when r,p,s clicked
+            const amount = document.getElementById('amount').value; //ammount is the current wager amount
+            const choice = this.value; //rock, paper, or scissors
+
+            //form data added to a variable
+            const formData = new FormData()
+            formData.append('amount', amount);
+            formData.append('choice', choice);
+
+            fetch(' {{ url_for("play_rps") }}', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    amount: amount,
+                    choice: choice
+                })
+            })
+            .then(response => response.json())
+            .then(data=>{
+                gameSection.style.display = 'none';
+                // Results Section
+                const playerDisplay = document.getElementById('player-choice-display');
+                const computerDisplay = document.getElementById('computer-choice-display');
+                const resultMessage = document.getElementById('result-message');
+
+                //Dynamically modiffy the results, so it shows whateer the player and cpu choose
+                playerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${choice}.png" alt="${choice}" width="50" height="50">`;
+                computerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${data.cpu_choice}.png" alt="${data.cpu_choice}" width="50" height="50">`;
+
+                //result message display
+                resultMessage.textContent = `${data.message}!`;
+                resultMessage.className = `result-message ${data.status}`;
+
+                document.querySelector('.credit h3:first-child').textContent = `Current Balance: $${data.current_balance}`;
+
+                resultsSection.style.display = 'block';
+                })
+        })
+    })
+
+});
+</script>
 
 
 {% endblock %}
