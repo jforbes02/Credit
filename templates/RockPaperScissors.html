@@ -82,22 +82,24 @@ document.addEventListener("DOMContentLoaded", function() {
             const choice = this.value; //rock, paper, or scissors
 
             //form data added to a variable
-            const formData = new FormData()
-            formData.append('amount', amount);
-            formData.append('choice', choice);
+            //const formData = new FormData()
+            //formData.append('amount', amount);
+            //formData.append('choice', choice);
 
             fetch(' {{ url_for("play_rps") }}', {
                 method: 'POST',
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
                     amount: amount,
-                    choice: choice
+                    player_choice: choice
                 })
             })
-            .then(response => response.json())
-            .then(data=>{
+            .then(response => response.json()) //(Debugging) Fetch request receives response
+            .then((data)=>{
                 gameSection.style.display = 'none';
                 // Results Section
                 const playerDisplay = document.getElementById('player-choice-display');

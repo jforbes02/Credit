@@ -136,14 +136,14 @@ def play_rps():
         g_result['player_choice'] = player_choice
 
         if g_result["status"] == "tie":
-            session['wager'] = g_result["wager"]
+            session['wager'] = g_result["amount"]
 
             if is_ajax:
                 return jsonify({
                     'status': 'tie',
                     'message': 'TIE',
                     'amount': g_result["amount"],
-                    'cpu_choice': g_result[g_result['cpu_choice']],
+                    'cpu_choice': g_result['cpu_choice'],
                     'current_balance': current_user.current_balance
                 })#wager for next round
             else:
@@ -172,7 +172,7 @@ def play_rps():
                 'status': g_result['status'],
                 'message': g_result['message'],
                 'amount': g_result['amount'],
-                'cpu_choice': g_result[g_result['cpu_choice']],
+                'cpu_choice': g_result['cpu_choice'],
                 'current_balance': current_user.current_balance,
             })
         else:
