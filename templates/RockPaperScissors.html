@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Rock Paper Scissors <!-- Page Title -->
+Rock Paper Scissors
 {% endblock %}
 
 {% block content %}
@@ -45,7 +45,6 @@ Rock Paper Scissors <!-- Page Title -->
                     <h3>Your Choice</h3>
                     <div id="player-choice-display" class="choice-display"></div>
                 </div>
-                <div class="v5">V5</div>
                 <div class="computer-choice">
                     <h3>Computer Choice</h3>
                     <div id="computer-choice-display" class="CPU-display"></div>
@@ -81,25 +80,31 @@ document.addEventListener("DOMContentLoaded", function() {
             const amount = document.getElementById('amount').value; //ammount is the current wager amount
             const choice = this.value; //rock, paper, or scissors
 
-            //form data added to a variable
-            //const formData = new FormData()
-            //formData.append('amount', amount);
-            //formData.append('choice', choice);
+            fetch('/RockPaperScissors', {
 
-            fetch(' {{ url_for("play_rps") }}', {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
+                    'Accept': 'application/json'
+
                 },
                 body: JSON.stringify({
                     amount: amount,
                     player_choice: choice
                 })
             })
-            .then(response => response.json()) //(Debugging) Fetch request receives response
-            .then((data)=>{
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data=>{
+
                 gameSection.style.display = 'none';
                 // Results Section
                 const playerDisplay = document.getElementById('player-choice-display');
@@ -111,10 +116,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 computerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${data.cpu_choice}.png" alt="${data.cpu_choice}" width="50" height="50">`;
 
                 //result message display
-                resultMessage.textContent = `${data.message}!`;
-                resultMessage.className = `result-message ${data.status}`;
+                resultMessage.textContent = `${data.message}!`; //Won, Tie, or Loss
+                resultMessage.className = `result-message ${data.status}`; //Handles the CSS that will be implemented
 
-                document.querySelector('.credit h3:first-child').textContent = `Current Balance: $${data.current_balance}`;
+                document.querySelector('.credits h3:first-child').textContent = `Current Balance: $${data.current_balance}`;
 
                 resultsSection.style.display = 'block';
                 })

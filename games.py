@@ -16,7 +16,7 @@ def RPS(choice, amount):
     print(f"Computer chose {cpu_choice}")
 
     result={}
-    result["cpu_choice"] = cpu_choice  #cpus choice is now in the new dictionary
+    result["cpu_choice"] = cpu_choice  #cpus choice is now in the result dictionary
 
     if choice == cpu_choice:
         result["status"] = "tie"

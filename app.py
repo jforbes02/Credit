@@ -115,30 +115,20 @@ def delete_account():
 def play_rps():
     """  Connecting the game to this  """
     if request.method == 'POST':
-        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-
-        if is_ajax:
+        try:
             data = request.get_json()
             amount = int(data.get('amount', 5))
             player_choice = data.get('player_choice')
-        else:
-            amount = int(request.form['amount'], 5)
-            player_choice = request.form['choice']
 
-        if amount <=0:
-            if is_ajax: #makes sure it is positive
+            print(f"Received amount: {amount}, {player_choice}")
+            if amount <=0:
                 return jsonify({'error': 'Enter number > 0'}), 400
-            else:
-                flash('Please enter an amount greater than 0')
-                return redirect(url_for('play_rps'))
-        #player_choice = request.form.get('choice')
-        g_result = RPS(player_choice, amount) #game function starts
-        g_result['player_choice'] = player_choice
 
-        if g_result["status"] == "tie":
-            session['wager'] = g_result["amount"]
+            g_result = RPS(player_choice, amount) #game function starts
+            g_result['player_choice'] = player_choice
 
-            if is_ajax:
+            if g_result["status"] == "tie":
+                session['wager'] = g_result["amount"]
                 return jsonify({
                     'status': 'tie',
                     'message': 'TIE',
@@ -146,28 +136,17 @@ def play_rps():
                     'cpu_choice': g_result['cpu_choice'],
                     'current_balance': current_user.current_balance
                 })#wager for next round
-            else:
-                flash(f"Tie Double Or Nothing: ${g_result['amount']}")
-                return render_template('RockPaperScissors.html', user=current_user,wager=g_result["amount"], game_result=g_result)
 
-        transaction_type = "payment" if g_result["status"] == "win" else "loss"
-        transaction_amount = abs(g_result["amount"])
-        description = f"{'Won Game' if g_result["status"] == "win" else 'Lost Game'}: RPS"
+            transaction_type = "payment" if g_result["status"] == "win" else "loss"
+            transaction_amount = abs(g_result["amount"])
+            description = f"{'Won Game' if g_result["status"] == "win" else 'Lost Game'}: RPS"
 
-        rps_transresult = Account.transaction( #creates record of transaction
-            current_user, #current logged in user
-            transaction_type, #transaction type(payment or loss)
-            transaction_amount, #amount lost or payed
-            description
-        )
-
-
-        if isinstance(rps_transresult, str):  # Error occurred if string
-            flash(rps_transresult)
-        else:
-            flash(f'Game completed! {description}')
-
-        if is_ajax:
+            rps_transresult = Account.transaction( #creates record of transaction
+                current_user, #current logged in user
+                transaction_type, #transaction type(payment or loss)
+                transaction_amount, #amount lost or payed
+                description
+            )
             return jsonify({
                 'status': g_result['status'],
                 'message': g_result['message'],
@@ -175,8 +154,8 @@ def play_rps():
                 'cpu_choice': g_result['cpu_choice'],
                 'current_balance': current_user.current_balance,
             })
-        else:
-            return render_template('RockPaperScissors.html', user=current_user, game_result=g_result)
+        except Exception as e:
+            (print(e))
     return render_template('RockPaperScissors.html', user=current_user)
 
 
@@ -215,5 +194,6 @@ def store():
 with app.app_context():
     #db.drop_all()
     db.create_all()
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
