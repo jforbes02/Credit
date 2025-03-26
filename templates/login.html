@@ -1,6 +1,20 @@
 {%  extends "base.html" %}
+<head>
+
+
+</head>
 {%  block content %}
 <body>
+    <div class="container" id="container">
+        <div class="form-container" sign-up>
+            <form>
+                <h1>Create Account</h1>
+                <div class="social-icons">
+                    <a href="{{ url_for('register') }}" class="icon"></a>
+                </div>
+            </form>
+        </div>
+    </div>
     <form action="#" method="POST">
         <div class="input-box">
             <input type="text" name="email" placeholder="email address">
@@ -18,21 +32,5 @@
         </div>
     </form>
 </body>
-<style>
-    body{
-        display: flex;
-        background-color: white;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        color: white;
-    }
-    form{
-        width: 200px;
-        border: 10px green solid;
-        color: white;
-    }
 
-</style>
 {% endblock %}
