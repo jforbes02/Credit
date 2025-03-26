@@ -99,6 +99,7 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
+    #items = i
     transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).limit(5).all()
     return render_template('dashboard.html', transactions=transactions)
 

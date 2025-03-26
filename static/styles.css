@@ -22,3 +22,23 @@
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
+.buy-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+  	appearance: none;
+	border: none;
+	outline: none;
+	background: none;
+	cursor: pointer;
+
+	font-size: 1.25rem;
+	font-weight: 700;
+	text-transform: uppercase;
+
+	padding: 1rem 1.5rem;
+	border-radius: 0.5rem;
+	background-color: red;
+	color: white;
+	margin-bottom: 2rem;
+}

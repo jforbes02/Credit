@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     current_balance = db.Column(db.Integer, default=0, nullable=False)
     account_status = db.Column(db.String(20), default='active')
     password = db.Column(db.String(80), nullable=False)
+    #items = db.Column(db.Integer, default=0)
     #password protection
     def set_password(self, password):
         self.password = generate_password_hash(password)

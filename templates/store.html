@@ -1,5 +1,60 @@
 {%  extends "base.html" %}
+
 {%  block content %}
+<div class="store-container">
+    <div class="store-header">
+        <h1>C-Store</h1>
+        <div class="credits">
+        <h3>Current Balance: ${{ current_user.current_balance }}</h3>
+        <h3>Credit Limit: ${{ current_user.credit_limit }}</h3>
+        <p>Availible Credit: ${{ current_user.credit_limit - current_user.current_balance }}</p>
 
+        </div>
+    </div>
 
+    <div class="products-grid">
+        <div class="product-card">
+            Item 1
+            <div class="product-info">
+                <h3>Product 1</h3>
+                <p class="product-price">$100</p>
+                <button class="buy-btn" data-item="I1" data-price="100">Buy Now</button>
+            </div>
+        </div> <!-- Item One -->
+
+        <div class="product-card">
+            Item 2
+            <div class="product-info">
+                <h3>Product 2</h3>
+                <p class="product-price">$367</p>
+                <button class="buy-btn" data-item="I2" data-price="367">Buy Now</button>
+            </div>
+        </div> <!-- Item 2 -->
+
+        <div class="product-card">
+            Item 3
+            <div class="product-info">
+                <h3>Product 3</h3>
+                <p class="product-price">$800</p>
+                <button class="buy-btn" data-item="I3" data-price="800">Buy Now</button>
+            </div>
+        </div> <!-- Item 3 -->
+
+        <div class="purchase-modal" >
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Confirm Purchase</h2>
+                <p id="modal-item-name"></p>
+                <p id="modal-item-price"></p>
+
+                <form action="{{ url_for('make_purchase') }}" method="POST">
+                    <input type="hidden" id="amount" name="amount" value="">
+                    <input type="hidden" id="description" name="description" value="">
+                    <button type="submit" class="confirm-purchase-btn">Confirm Purchase</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
