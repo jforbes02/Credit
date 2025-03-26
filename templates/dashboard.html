@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {%  block title %}
-{current_user.username} Dashboard
+    Dashboard
 {%  endblock %}
 {% block content %}
 <div class="dashboard-container">
@@ -24,7 +24,11 @@
             </div>
         </div>
     </div>
-
+<div class="items-container">
+    <div class="items">
+        {% for item in items%}
+    </div>
+</div>
     <div class="dashboard-actions">
         <div class="action-card">
             <h3>Make A Payment!</h3>

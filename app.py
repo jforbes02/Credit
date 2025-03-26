@@ -100,7 +100,7 @@ def logout():
 @login_required
 def dashboard():
     transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).limit(5).all()
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', transactions=transactions)
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 @login_required
