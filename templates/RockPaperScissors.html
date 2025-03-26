@@ -23,6 +23,8 @@ Rock Paper Scissors
         </form><!-- wager-form -->
     </div>
 
+    <div id="status-display" class="status-display">Game Ready!</div>
+
     <div id="game-section" class="game-section" style="display: none;">
         <div class="choices">
             <button type="submit" name="choice" value="rock" id="rock" class="choice-btn">
@@ -51,7 +53,6 @@ Rock Paper Scissors
                 </div>
             </div>
             <div id="result-message" class="result-message"></div>
-            <button id="play-again" class="btn btn-primary">Play Again?</button>
         </div> <!-- Results -->
 
 
@@ -104,25 +105,44 @@ document.addEventListener("DOMContentLoaded", function() {
                 return response.json();
             })
             .then(data=>{
+                document.querySelector('#wager-form button[type="submit"]').style.display = 'none';
 
-                gameSection.style.display = 'none';
-                // Results Section
+                let wagerAmount = parseInt(document.getElementById('amount').value);
                 const playerDisplay = document.getElementById('player-choice-display');
                 const computerDisplay = document.getElementById('computer-choice-display');
                 const resultMessage = document.getElementById('result-message');
+
+                if (data.status === 'tie'){
+                    wagerAmount = wagerAmount * 2;
+                    document.getElementById('amount').value = wagerAmount;
+                    document.getElementById('status-display').textContent = `DOUBLE OR NOTHING!CHOOSE AGAIN! ${data.status.toUpperCase()}`;
+                    document.getElementById('status-display').className = `status-display ${data.status}`;
+
+                    playerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${choice}.png" alt="${choice}" width="50" height="50">`;
+                    computerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${data.cpu_choice}.png" alt="${data.cpu_choice}" width="50" height="50">`;
+
+                    document.querySelector('.results').style.display = 'block';
+
+                    document.querySelector('.credits h3:first-child').textContent = `Current Balance: $${data.current_balance}`;
+                } else {
+                // Results Section
 
                 //Dynamically modiffy the results, so it shows whateer the player and cpu choose
                 playerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${choice}.png" alt="${choice}" width="50" height="50">`;
                 computerDisplay.innerHTML = `<img src="{{ url_for('static', filename='') }}${data.cpu_choice}.png" alt="${data.cpu_choice}" width="50" height="50">`;
 
+
                 //result message display
-                resultMessage.textContent = `${data.message}!`; //Won, Tie, or Loss
+                resultMessage.textContent = `${data.message}! ${data.amount} credit!`; //Won, Tie, or Loss
                 resultMessage.className = `result-message ${data.status}`; //Handles the CSS that will be implemented
 
                 document.querySelector('.credits h3:first-child').textContent = `Current Balance: $${data.current_balance}`;
 
                 resultsSection.style.display = 'block';
-                })
+
+                }
+                document.querySelector('.credits h3:first-child').textContent = `Current Balance: $${data.current_balance}`;
+            })
         })
     })
 
