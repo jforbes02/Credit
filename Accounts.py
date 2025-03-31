@@ -1,5 +1,8 @@
 import random
 from database import User, Transaction, db
+import time
+import calendar
+from datetime import datetime
 
 class Account:
     """ Handles credit limits and transactions """
@@ -74,5 +77,7 @@ class Account:
             return "Invalid Type"
 
     @staticmethod
-    def weekly_debt():
-        return User.current_balance / User.credit_limit * random.randint(1, 10)
+    def weekly_debt(target_day = calendar.FRIDAY):
+        today = datetime.today().weekday() #4
+        if today == target_day:
+            return User.current_balance / User.credit_limit * random.randint(1, 10)

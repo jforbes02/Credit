@@ -2,8 +2,9 @@ from flask import Flask, render_template, redirect, flash, url_for, request, ses
 from flask_login import logout_user, login_required, current_user, LoginManager, login_user
 from werkzeug.security import generate_password_hash
 from Accounts import Account
-from database import db, User, Config, Transaction
+from database import db, User, Config, Transaction, Item
 from games import RPS
+
 """
 App that
 1. Creates profile for users  ✔
@@ -164,24 +165,33 @@ def play_rps():
 @login_required
 def make_purchase():
     """ Handles making payment with credit in the store"""
-    amount = int(request.form.get('amount', 0))
+    amount = int(request.form.get('amount', 0)) #gets price of item
+    quantity = int(request.form.get('quantity', 1)) #gets how much of item
     description = request.form.get('description')
+    item_id = request.form.get('item_id')
 
-    if amount < 0:
-        flash('Please enter an amount greater than 0')
-        return redirect(url_for('dashboard'))
+    total_amount = amount * quantity
+    if current_user.current_balance + total_amount > current_user.credit_limit:
+        flash("You dont have enough credit to make this payment! Reduce it by playing a game!")
+        return redirect(url_for('play_rps'))
 
-    if amount > current_user.current_balance:
-        flash("Too much")
-        return redirect(url_for('dashboard'))
 
     transaction_result = Account.transaction(
-        current_user,"payment",amount,description)
+        current_user,
+        "payment",
+        total_amount,
+        description,
+        )
 
+    if item_id:
+        item = Item.query.get(item_id)
+        if item:
+            current_user.items.append(item)
+            db.session.commit()
+            flash(f'Success!')
+        else:
+            flash('Item does not exist')
 
-    if isinstance(transaction_result, str): flash(transaction_result)
-    else:
-        flash(f'Payment of ${amount}, {description} completed!')
 
     return redirect(url_for('dashboard'))
 
@@ -193,8 +203,17 @@ def store():
 
 
 with app.app_context():
+    #database initialization
     #db.drop_all()
     db.create_all()
+    if Item.query.count() == 0:
+        items = [
+            Item(name="Product 1", price=100, quantity=0, image="static/cat.png", description="Cool Cat" ),
+            Item(name="Product 2", price=367, quantity=0, image="static/cat1.png", description="Cooler Cat"),
+            Item(name="Product 3", price=800, quantity=0, image="static/cat2.png", description="Coolest Cat"),
+        ]
+        db.session.add_all(items)
+        db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

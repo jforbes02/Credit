@@ -19,7 +19,7 @@ class User(db.Model, UserMixin):
     current_balance = db.Column(db.Integer, default=0, nullable=False)
     account_status = db.Column(db.String(20), default='active')
     password = db.Column(db.String(80), nullable=False)
-    #items = db.Column(db.Integer, default=0)
+    items = db.relationship('Item', secondary='u_items', backref=db.backref('owners', lazy='dynamic'))
     #password protection
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -39,3 +39,19 @@ class Transaction(db.Model):
     user = db.relationship('User', backref='transaction', lazy='select')
     def __repr__(self):
         return f'<Transaction {self.id}: {self.transaction_type} ${self.amount}>'
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(255), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self): #debugging
+        return f'<Item {self.id}: {self.name}>'
+
+u_items = db.Table('u_items',
+                   db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                   db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True),
+                   db.Column('purchase_time', db.DateTime, nullable=False, default=datetime.utcnow))

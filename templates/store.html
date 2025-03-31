@@ -14,27 +14,27 @@
 
     <div class="products-grid">
         <div class="product-card">
-            Item 1
             <div class="product-info">
-                <h3>Product 1</h3>
+                <h3>Cool Kat</h3>
+                <img src="/static/cat.png" alt="cat", width="150", height="150">
                 <p class="product-price">$100</p>
                 <button class="buy-btn" data-item="I1" data-price="100">Buy Now</button>
             </div>
         </div> <!-- Item One -->
 
         <div class="product-card">
-            Item 2
             <div class="product-info">
-                <h3>Product 2</h3>
+                <h3>Cooler Kat</h3>
+                <img src="/static/cat1.png" alt="cat", width="150", height="150">
                 <p class="product-price">$367</p>
                 <button class="buy-btn" data-item="I2" data-price="367">Buy Now</button>
             </div>
         </div> <!-- Item 2 -->
 
         <div class="product-card">
-            Item 3
             <div class="product-info">
-                <h3>Product 3</h3>
+                <h3>Coolest Kat</h3>
+                <img src="/static/cat2.png" alt="cat", width="150", height="150">
                 <p class="product-price">$800</p>
                 <button class="buy-btn" data-item="I3" data-price="800">Buy Now</button>
             </div>
@@ -50,11 +50,12 @@
                 <form action="{{ url_for('make_purchase') }}" method="POST">
                     <input type="hidden" id="amount" name="amount" value="">
                     <input type="hidden" id="description" name="description" value="">
+                    <input type="hidden" id="item_id" name="item_id" value="">
                     <button type="submit" class="confirm-purchase-btn">Confirm Purchase</button>
 
                 </form>
             </div>
-        </div>
+        </div> <!-- modal for purchases -->
     </div>
 </div>
 {% endblock %}
@@ -62,7 +63,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const buy = document.querySelectorAll('.buy-btn');
-        const value = document.querySelector('.product-price').value;
 
     });
 </script>

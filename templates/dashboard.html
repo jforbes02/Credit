@@ -25,13 +25,31 @@
         </div>
     </div>
 <div class="items-container">
-    <div class="items">
+    <h3>Your Items</h3>
+    {% if current_user.items %}
+    <div class="items-grid">
+        {% for item in current_user.items %}
+        <div class="item-card">
+            {% if item.image %}
+            <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">
+            {% endif %}
+            <div class="item-info">
+                <h4>{{ item.name }}</h4>
+            </div>
+        </div>
+        {% endfor %}
     </div>
+{% else %}
+<p>You haven't purchard any items yet</p>
+{% endif %}
+</div>
 </div>
     <div class="dashboard-actions">
         <div class="action-card">
             <h3>Make A Payment!</h3>
-            <form action="{{ url_for('play_rps') }}" method="POST"></form>
+            <div class="payment-link">
+                <a href="{{ url_for('play_rps') }}" class="btn btn-primary" > Pay With A Game</a>
+            </div>
         </div>
     </div>
     <div class="action-card">
