@@ -28,22 +28,10 @@
 
 <div class="items-container">
     <h3>Your Items</h3>
-    {% if current_user.items %}
-    <div class="items-grid">
-        {% for item in current_user.items %}
-        <div class="item-card">
-            {% if item.image %}
-            <img src="{{ item.image }}" alt="{{ item.name }}" width="50" height="50">
-            {% endif %}
-            <div class="item-info">
-                <h4>{{ item.name }}</h4>
-            </div>
-        </div>
-        {% endfor %}
+    <div id="items-display" class="items-grid">
     </div>
-{% else %}
-<p>You haven't purchased any items yet</p>
-{% endif %}
+
+
 </div>
 
 </div>
@@ -89,5 +77,6 @@
             {% endfor %}
         </table>
     </div>
-</div>
+
+
 {% endblock %}

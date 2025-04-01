@@ -18,6 +18,10 @@
                 <h3>Cool Kat</h3>
                 <img src="/static/cat.png" alt="cat", width="150", height="150">
                 <p class="product-price">$100</p>
+                <div class="quantity-select">
+                    <label for="quantity1">Quantity:</label>
+                    <input type="number" id="quantity1" name="quantity1" class="quantity-input" min="1" value="1">
+                </div>
                 <button class="buy-btn" data-item="1" data-price="100">Buy Now</button>
             </div>
         </div> <!-- Item One -->
@@ -27,6 +31,10 @@
                 <h3>Cooler Kat</h3>
                 <img src="/static/cat1.png" alt="cat", width="150", height="150">
                 <p class="product-price">$367</p>
+                <div class="quantity-select">
+                    <label for="quantity2">Quantity:</label>
+                    <input type="number" id="quantity2" name="quantity2" class="quantity-input" min="1" value="1">
+                </div>
                 <button class="buy-btn" data-item="2" data-price="367">Buy Now</button>
             </div>
         </div> <!-- Item 2 -->
@@ -36,6 +44,10 @@
                 <h3>Coolest Kat</h3>
                 <img src="/static/cat2.png" alt="cat", width="150", height="150">
                 <p class="product-price">$800</p>
+                <div class="quantity-select">
+                    <label for="quantity3">Quantity:</label>
+                    <input type="number" id="quantity3" name="quantity3" class="quantity-input" min="1" value="1">
+                </div>
                 <button class="buy-btn" data-item="3" data-price="800">Buy Now</button>
             </div>
         </div> <!-- Item 3 -->
@@ -46,11 +58,14 @@
                 <h2>Confirm Purchase</h2>
                 <p id="modal-item-name"></p>
                 <p id="modal-item-price"></p>
+                <p id="modal-item-quantity"></p>
+                <p id="modal-total-price"></p>
 
                 <form action="{{ url_for('make_purchase') }}" method="POST">
                     <input type="hidden" id="amount" name="amount" value="">
                     <input type="hidden" id="description" name="description" value="">
                     <input type="hidden" id="item_id" name="item_id" value="">
+                    <input type="hidden" id="quantity" name="quantity" value="1">
                     <button type="submit" class="confirm-purchase-btn">Confirm Purchase</button>
 
                 </form>
@@ -66,10 +81,13 @@
         const closeModal = document.querySelector('.close-modal');//closes box
         const modalItemName = document.getElementById("modal-item-name");
         const modalItemPrice = document.getElementById("modal-item-price"); //shows user what they are going to purchase
+        const modalItemQuantity = document.getElementById("modal-item-quantity");
+        const modalTotalPrice = document.getElementById("modal-total-price");
 
         const amountInput = document.getElementById("amount");
         const description = document.getElementById("description");
         const itemIDInput = document.getElementById("item_id");
+        const quantityInput = document.getElementById("quantity");
         //hidden form fields that send purchase info to app
 
         buy.forEach(button => { //click functionality for each button
@@ -77,13 +95,18 @@
                 const price = this.getAttribute("data-price");
                 const itemId = this.getAttribute("data-item");
                 const iName = this.parentElement.querySelector('h3').textContent;
-
+                const quantityElement = this.parentElement.querySelector('.quantity-input');
+                const quantity = parseInt(quantityElement.value);
+                const totalPrice = price * quantity;
                 //modal work
                 modalItemName.textContent = iName; //text from the Name of items
                 modalItemPrice.textContent = price; //text of the price of the value
+                modalItemQuantity.textContent = quantity;
+                modalTotalPrice.textContent = totalPrice;
                 //hidden forms
                 amountInput.value = price;
-                description.value = iName;
+                quantityInput.value = quantity;
+                description.value = quantity + iName;
                 itemIDInput.value = itemId;
 
                 modal.style.display = "block";

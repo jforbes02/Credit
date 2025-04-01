@@ -52,6 +52,7 @@ class Item(db.Model):
         return f'<Item {self.id}: {self.name}>'
 
 u_items = db.Table('u_items',
-                   db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                   db.Column('id', db.Integer, primary_key=True),
+                   db.Column('user_id', db.Integer, db.ForeignKey('user.id'), nullable=False),
                    db.Column('item_id', db.Integer, db.ForeignKey('item.id'), nullable=False),
                    db.Column('purchase_time', db.DateTime, nullable=False, default=datetime.utcnow))
