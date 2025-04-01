@@ -167,18 +167,18 @@ def make_purchase():
     """ Handles making payment with credit in the store"""
     amount = int(request.form.get('amount', 0)) #gets price of item
     quantity = int(request.form.get('quantity', 1)) #gets how much of item
-    description = request.form.get('description')
+    description = request.form.get('description', 'Purchase')
     item_id = request.form.get('item_id')
+    print(f"Received item_id: {item_id}, type: {type(item_id)}")
 
     total_amount = amount * quantity
     if current_user.current_balance + total_amount > current_user.credit_limit:
-        flash("You dont have enough credit to make this payment! Reduce it by playing a game!")
+        flash("You dont have enough available credit to make this payment! Reduce it by playing a game!")
         return redirect(url_for('play_rps'))
-
 
     transaction_result = Account.transaction(
         current_user,
-        "payment",
+        "purchase",
         total_amount,
         description,
         )
@@ -208,9 +208,9 @@ with app.app_context():
     db.create_all()
     if Item.query.count() == 0:
         items = [
-            Item(name="Product 1", price=100, quantity=0, image="static/cat.png", description="Cool Cat" ),
-            Item(name="Product 2", price=367, quantity=0, image="static/cat1.png", description="Cooler Cat"),
-            Item(name="Product 3", price=800, quantity=0, image="static/cat2.png", description="Coolest Cat"),
+            Item(name="Cool Kat", price=100, quantity=1, image="static/cat.png", description="Cool Cat" ),
+            Item(name="Cooler Kat", price=367, quantity=1, image="static/cat1.png", description="Cooler Cat"),
+            Item(name="Coolest Kat", price=800, quantity=1, image="static/cat2.png", description="Coolest Cat"),
         ]
         db.session.add_all(items)
         db.session.commit()

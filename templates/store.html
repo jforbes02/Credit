@@ -18,7 +18,7 @@
                 <h3>Cool Kat</h3>
                 <img src="/static/cat.png" alt="cat", width="150", height="150">
                 <p class="product-price">$100</p>
-                <button class="buy-btn" data-item="I1" data-price="100">Buy Now</button>
+                <button class="buy-btn" data-item="1" data-price="100">Buy Now</button>
             </div>
         </div> <!-- Item One -->
 
@@ -27,7 +27,7 @@
                 <h3>Cooler Kat</h3>
                 <img src="/static/cat1.png" alt="cat", width="150", height="150">
                 <p class="product-price">$367</p>
-                <button class="buy-btn" data-item="I2" data-price="367">Buy Now</button>
+                <button class="buy-btn" data-item="2" data-price="367">Buy Now</button>
             </div>
         </div> <!-- Item 2 -->
 
@@ -36,7 +36,7 @@
                 <h3>Coolest Kat</h3>
                 <img src="/static/cat2.png" alt="cat", width="150", height="150">
                 <p class="product-price">$800</p>
-                <button class="buy-btn" data-item="I3" data-price="800">Buy Now</button>
+                <button class="buy-btn" data-item="3" data-price="800">Buy Now</button>
             </div>
         </div> <!-- Item 3 -->
 
@@ -58,11 +58,40 @@
         </div> <!-- modal for purchases -->
     </div>
 </div>
-{% endblock %}
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const buy = document.querySelectorAll('.buy-btn');
+        const buy = document.querySelectorAll('.buy-btn'); //buy now buttons
+        const modal = document.querySelector('.purchase-modal');//popup box when buynow clicked
+        const closeModal = document.querySelector('.close-modal');//closes box
+        const modalItemName = document.getElementById("modal-item-name");
+        const modalItemPrice = document.getElementById("modal-item-price"); //shows user what they are going to purchase
 
+        const amountInput = document.getElementById("amount");
+        const description = document.getElementById("description");
+        const itemIDInput = document.getElementById("item_id");
+        //hidden form fields that send purchase info to app
+
+        buy.forEach(button => { //click functionality for each button
+            button.addEventListener("click", function(){
+                const price = this.getAttribute("data-price");
+                const itemId = this.getAttribute("data-item");
+                const iName = this.parentElement.querySelector('h3').textContent;
+
+                //modal work
+                modalItemName.textContent = iName; //text from the Name of items
+                modalItemPrice.textContent = price; //text of the price of the value
+                //hidden forms
+                amountInput.value = price;
+                description.value = iName;
+                itemIDInput.value = itemId;
+
+                modal.style.display = "block";
+            });
+        });
+        closeModal.addEventListener("click", function(){// close when x is clicked
+            modal.style.display = "none";
+        });
     });
 </script>
+{% endblock %}

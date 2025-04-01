@@ -24,6 +24,8 @@
             </div>
         </div>
     </div>
+
+
 <div class="items-container">
     <h3>Your Items</h3>
     {% if current_user.items %}
@@ -31,7 +33,7 @@
         {% for item in current_user.items %}
         <div class="item-card">
             {% if item.image %}
-            <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">
+            <img src="{{ item.image }}" alt="{{ item.name }}" width="50" height="50">
             {% endif %}
             <div class="item-info">
                 <h4>{{ item.name }}</h4>
@@ -40,9 +42,10 @@
         {% endfor %}
     </div>
 {% else %}
-<p>You haven't purchard any items yet</p>
+<p>You haven't purchased any items yet</p>
 {% endif %}
 </div>
+
 </div>
     <div class="dashboard-actions">
         <div class="action-card">

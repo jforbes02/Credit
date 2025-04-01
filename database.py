@@ -53,5 +53,5 @@ class Item(db.Model):
 
 u_items = db.Table('u_items',
                    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-                   db.Column('item_id', db.Integer, db.ForeignKey('item.id'), primary_key=True),
+                   db.Column('item_id', db.Integer, db.ForeignKey('item.id'), nullable=False),
                    db.Column('purchase_time', db.DateTime, nullable=False, default=datetime.utcnow))
