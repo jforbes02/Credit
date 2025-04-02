@@ -1,5 +1,4 @@
-import random
-import time
+import math
 import calendar
 from datetime import datetime
 from database import User, db, Transaction
@@ -117,3 +116,45 @@ class Account:
         db.session.commit()
 
         return debt_users
+
+    @staticmethod
+    def get_credit_scores(user):
+        """
+
+        :param user: User
+        :return: Credit score based on custom calculations (not real life credit calcs)
+        """
+        transactions = Transaction.query.filter(Transaction.user_id == user.id).all()
+        if not transactions:
+            return 670 #base credit score for new users
+
+        #How much credit is used
+        utilized_credit = user.current_balance / user.credit_limit
+        utilized_credit_score = ((1-min(utilized_credit, 1)) * (1000 * .45))
+
+        total_transactions = len(transactions) #how often transactoins are made
+        activity_score = min(math.log(total_transactions + 1) * 40, (1000 * .35))
+
+        #age of the account and oldest transaction
+        oldest = transactions[0]
+        for t in transactions: #goes through transactions to find the oldest one if an older transaction found
+            if t.created_at < oldest.created_at:
+                oldest = t
+        account_age = (datetime.utcnow() - oldest.created_at).days
+        age = min(account_age / 365, 1)
+        age_score = age * (1000 * .20)
+
+        final = utilized_credit_score + age_score + activity_score
+        return max(300, min(1000, round(final)))
+    @staticmethod
+    def get_credit_rating(score):
+        if score < 500:
+            return "Poor"
+        elif score < 669:
+            return "Fair"
+        elif score < 800:
+            return "Good"
+        elif score < 900:
+            return "Great"
+        else:
+            return "WOW SO GOOD"

@@ -11,11 +11,9 @@ App that
 2. Provides new users a credit line based on age ✔
 3. Has the user play rock-paper-scissors in order to pay back "credit" ✔
 4. Allow users to buy things with credit ✔
-5. Gives penalty to people that go over the credit limit
-More needs realized afterwards
-6. Something that provides weekly debt
-7. Games playable on websites 
-8. Displays website Credit scores, maybe put on a leaderboard~~
+5. Something that provides weekly debt ✔
+6. Games playable on websites 
+7. Displays website Credit scores ✔
 
 """
 app = Flask(__name__)
@@ -31,7 +29,7 @@ login_manager.login_view = 'login'  #tells flask go to login page for unauthoriz
 
 @app.route('/')
 def home():
-    return render_template('base.html')
+    return render_template('home.html')
 
 @app.route('/registration', methods=['GET', 'POST'])
 def register():
@@ -120,7 +118,11 @@ def dashboard():
         item.count = count
         display_items.append(item)
 
-    return render_template('dashboard.html', transactions=transactions, display_items=display_items)
+    #adding credit score to user dashboards
+    credit_score = Account.get_credit_scores(current_user)
+    credit_rating = Account.get_credit_rating(credit_score)
+
+    return render_template('dashboard.html', transactions=transactions, display_items=display_items, credit_score=credit_score, credit_rating=credit_rating)
 
 
 @app.route('/delete_account', methods=['GET', 'POST'])

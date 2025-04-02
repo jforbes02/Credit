@@ -33,6 +33,27 @@
         </div>
     </div>
 
+<div class="credit-item credit-score">
+    <h3>Credit Score</h3>
+    <div class="credit-score-details">
+        <div class="credit-score-info">
+            <p class="credit-value">{{ credit_score }}</p>
+            <span class="credit-status">Rating: {{ credit_rating }}</span>
+        </div>
+        <div class="credit-score-gauge">
+            <div class="credit-gauge" style="height: 10px; width:200px;">
+                <div class="credit-gauge-bar
+                {% if credit_rating == 'Poor' %} gauge-poor
+                {% elif credit_rating == 'Fair' %} gauge-fair
+                {% elif credit_rating == 'Good' %} gauge-good
+                {% elif credit_rating == 'Very Good' %} gauge-very-good
+                {% else %} gauge-excellent {% endif %}"
+                style="width: {{ (credit_score - 300) / 5.5 }}%;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="items-display" class="items-grid">
     <h1>Your Beautiful Cats</h1>

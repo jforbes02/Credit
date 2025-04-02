@@ -682,6 +682,14 @@ footer {
   border-radius: 8px;
   box-shadow: var(--card-shadow);
 }
+.login-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background-color: var(--bg-white);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
