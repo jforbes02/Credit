@@ -101,6 +101,7 @@ def logout():
 @app.route('/dashboard', methods= ['GET', 'POST'])
 @login_required
 def dashboard():
+    Account.weekly_debt()
     transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).limit(
         5).all()
 

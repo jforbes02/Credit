@@ -1,8 +1,8 @@
 import random
-from database import User, Transaction, db
 import time
 import calendar
 from datetime import datetime
+from database import User, db, Transaction
 
 class Account:
     """ Handles credit limits and transactions """
@@ -78,6 +78,42 @@ class Account:
 
     @staticmethod
     def weekly_debt(target_day = calendar.FRIDAY):
+        """
+
+        :param target_day:
+        :return:
+        """
         today = datetime.today().weekday() #4
-        if today == target_day:
-            return User.current_balance / User.credit_limit * random.randint(1, 10)
+
+        if today != target_day: #works only on Fridays
+            return 0
+
+        true_users = User.query.filter(User.current_balance > 0).all #all users that use their accounts
+        debt_users = 0 #users that the debt
+        date = datetime.today().date()
+
+
+        for user in true_users:
+            hit = Transaction.query.filter(
+                Transaction.user_id == user.id,
+                Transaction.type == "purchase",
+                Transaction.description == "Weekly Interest",
+                db.func.date(Transaction.created_at) == date).first()
+
+            if hit:
+                continue
+            ratio = user.current_balance / user.credit_limit
+
+            interest_rate = .22 + (ratio * .1) #interest rate of 22% (high but fun)
+            total_interest = int(user.current_balance * interest_rate)
+            total_interest = max(total_interest, 20) #no less than 20 dollars
+            interest_description = "Weekly Interest"
+            Account.transaction(user=user,
+                                type="purchase",
+                                amount=total_interest,
+                                description=interest_description)
+            debt_users += 1
+
+        db.session.commit()
+
+        return debt_users

@@ -22,6 +22,14 @@
                     {% endif %}
                 </p>
             </div>
+            <div class="credit-item">
+                <h3>Weekly Interest</h3>
+                <p class="credit-interest">
+                    {% set utilization = current_user.current_balance / current_user.credit_limit %}
+                    {% set interest_rate = (0.22 + (utilization * 0.1)) * 100 %}
+                    Current rate: {{ "%.2f"|format(interest_rate) }}% (applied every Friday)
+                </p>
+            </div>
         </div>
     </div>
 
