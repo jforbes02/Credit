@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, flash, url_for, request, ses
 from flask_login import logout_user, login_required, current_user, LoginManager, login_user
 from werkzeug.security import generate_password_hash
 from Accounts import Account
-from database import db, User, Config, Transaction, Item
+from database import db, User, Config, Transaction, Item, u_items
 from games import RPS
 
 """
@@ -97,12 +97,30 @@ def logout():
     flash("You have been logged out")
     return redirect(url_for("login"))
 
-@app.route('/dashboard')
+
+@app.route('/dashboard', methods= ['GET', 'POST'])
 @login_required
 def dashboard():
-    #items = i
-    transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).limit(5).all()
-    return render_template('dashboard.html', transactions=transactions)
+    transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.created_at.desc()).limit(
+        5).all()
+
+    # Get all items for the current user from the u_items table
+    items_query = db.session.query(
+        Item,
+        db.func.count(Item.id).label('count')
+    ).join(
+        u_items,
+        (u_items.c.item_id == Item.id) & (u_items.c.user_id == current_user.id)
+    ).group_by(Item.id).all()
+
+    # Create display items with actual counts from database
+    display_items = []
+    for item, count in items_query:
+        item.count = count
+        display_items.append(item)
+
+    return render_template('dashboard.html', transactions=transactions, display_items=display_items)
+
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 @login_required
@@ -165,13 +183,13 @@ def play_rps():
 @login_required
 def make_purchase():
     """ Handles making payment with credit in the store"""
-    amount = int(request.form.get('amount', 0)) #gets price of item
-    quantity = int(request.form.get('quantity', 1)) #gets how much of item
+    amount = int(request.form.get('amount', 1)) #gets price of item
+    #quantity = int(request.form.get('quantity', 1)) #gets how much of item
     description = request.form.get('description', 'Purchase')
     item_id = request.form.get('item_id')
     print(f"Received item_id: {item_id}, type: {type(item_id)}")
 
-    total_amount = amount * quantity
+    total_amount = amount
     if current_user.current_balance + total_amount > current_user.credit_limit:
         flash("You dont have enough available credit to make this payment! Reduce it by playing a game!")
         return redirect(url_for('play_rps'))
@@ -186,8 +204,7 @@ def make_purchase():
     if item_id:
         item = Item.query.get(item_id)
         if item:
-            for i in range(quantity):
-                current_user.items.append(item)
+            current_user.items.append(item)
             db.session.commit()
             flash(f'Success!')
         else:
