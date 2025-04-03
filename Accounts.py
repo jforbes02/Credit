@@ -40,6 +40,11 @@ class Account:
             db.session.commit()
             return transaction
         elif type == "payment":
+            if user.current_balance - amount < 0:
+                amount = user.current_balance #makes sure balance is 0
+                if amount == 0:
+                    return "No payment needed"
+
             user.current_balance -= amount
             transaction = Transaction(
                 amount = amount,
